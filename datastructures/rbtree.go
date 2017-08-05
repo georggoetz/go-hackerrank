@@ -6,6 +6,10 @@ const (
 	red, black color = true, false
 )
 
+type Interface interface {
+	Less(interface{}) bool
+}
+
 type Tree struct {
 	root *Node
 	size int
@@ -15,27 +19,22 @@ func (t *Tree) Size() int {
 	return t.size
 }
 
-func (t *Tree) Root() *Node {
-	return t.root
-}
-
 type Node struct {
-	key    int
-	value  interface{}
+	value  Interface
 	color  color
 	parent *Node
 	left   *Node
 	right  *Node
 }
 
-func (n *Node) Key() int {
-	return n.key
+func (n *Node) Value() interface{} {
+	return n.value
 }
 
-func (n *Node) Search(key int) *Node {
+func (n *Node) Search(v Interface) *Node {
 	x := n
-	for x != nil && (key < x.key || x.key < key) {
-		if key < x.key {
+	for x != nil && (v.Less(x.value) || x.value.Less(v)) {
+		if v.Less(x.value) {
 			x = x.left
 		} else {
 			x = x.right
@@ -90,18 +89,18 @@ func NewTree() *Tree {
 	return &Tree{}
 }
 
-func (t *Tree) Search(key int) *Node {
+func (t *Tree) Search(v Interface) *Node {
 	if t.root == nil {
 		return nil
 	}
-	return t.root.Search(key)
+	return t.root.Search(v)
 }
 
-func (t *Tree) Insert(key int, value interface{}) *Node {
-	x, y, z := t.root, (*Node)(nil), &Node{key: key, value: value, color: red}
+func (t *Tree) Insert(v Interface) *Node {
+	x, y, z := t.root, (*Node)(nil), &Node{value: v, color: red}
 	for x != nil {
 		y = x
-		if z.key < x.key {
+		if z.value.Less(x.value) {
 			x = x.left
 		} else {
 			x = x.right
@@ -110,7 +109,7 @@ func (t *Tree) Insert(key int, value interface{}) *Node {
 	z.parent = y
 	if y == nil {
 		t.root = z
-	} else if z.key < y.key {
+	} else if z.value.Less(y.value) {
 		y.left = z
 	} else {
 		y.right = z

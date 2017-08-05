@@ -2,49 +2,52 @@ package rbtree
 
 import "fmt"
 
+type key int
+
+func (n key) Less(v interface{}) bool {
+	value, _ := v.(key)
+	return n < value
+}
+
 func ExampleTree_Insert() {
 	t := NewTree()
-	t.Insert(1407482458, nil)
-	t.Insert(923960288, nil)
-	t.Insert(225310218, nil)
-	t.Insert(1166620750, nil)
-	t.Insert(458607644, nil)
-	t.Insert(1403830842, nil)
-	t.Insert(1164433078, nil)
-	t.Insert(1273045782, nil)
-	t.Insert(1856817205, nil)
-	t.Insert(198887065, nil)
-	t.Insert(262719564, nil)
-	t.Insert(270288546, nil)
-	t.Insert(1713131318, nil)
-	t.Insert(440430166, nil)
-	t.Insert(272333804, nil)
-	t.Insert(824337406, nil)
-
-	fmt.Println(BlackHeight(t.root))
-	// Output:
-	// -1
+	t.Insert(key(1407482458))
+	t.Insert(key(923960288))
+	t.Insert(key(225310218))
+	t.Insert(key(1166620750))
+	t.Insert(key(458607644))
+	t.Insert(key(1403830842))
+	t.Insert(key(1164433078))
+	t.Insert(key(1273045782))
+	t.Insert(key(1856817205))
+	t.Insert(key(198887065))
+	t.Insert(key(262719564))
+	t.Insert(key(270288546))
+	t.Insert(key(1713131318))
+	t.Insert(key(440430166))
+	t.Insert(key(272333804))
+	t.Insert(key(824337406))
 }
 
 func ExampleTree_Search() {
 	t := NewTree()
-	t.Insert(1, nil)
-	t.Insert(2, nil)
-	t.Insert(3, nil)
-	t.Insert(4, nil)
-	t.Insert(5, nil)
-	t.Insert(6, nil)
-	n := t.Search(4)
+	t.Insert(key(1))
+	t.Insert(key(2))
+	t.Insert(key(3))
+	t.Insert(key(4))
+	t.Insert(key(5))
+	t.Insert(key(6))
+	n := t.Search(key(4))
 	if n != nil {
-		fmt.Println(n.key)
+		fmt.Println(n.Value())
 	}
-	n = t.Search(2)
+	n = t.Search(key(2))
 	if n != nil {
-		fmt.Println(n.key)
+		fmt.Println(n.Value())
 	}
-	n = t.Search(5)
+	n = t.Search(key(5))
 	if n != nil {
-		fmt.Println(n.key)
+		fmt.Println(n.Value())
 	}
 	// Output:
 	// 4
@@ -54,78 +57,78 @@ func ExampleTree_Search() {
 
 func ExampleNode_Maximum() {
 	t := NewTree()
-	t.Insert(2, nil)
-	t.Insert(3, nil)
-	t.Insert(4, nil)
-	t.Insert(6, nil)
-	t.Insert(7, nil)
-	t.Insert(9, nil)
-	t.Insert(13, nil)
-	t.Insert(15, nil)
-	t.Insert(17, nil)
-	t.Insert(18, nil)
-	t.Insert(20, nil)
+	t.Insert(key(2))
+	t.Insert(key(3))
+	t.Insert(key(4))
+	t.Insert(key(6))
+	t.Insert(key(7))
+	t.Insert(key(9))
+	t.Insert(key(13))
+	t.Insert(key(15))
+	t.Insert(key(17))
+	t.Insert(key(18))
+	t.Insert(key(20))
 
-	fmt.Println(t.root.Maximum().key)
+	fmt.Println(t.root.Maximum().Value())
 	// Output:
 	// 20
 }
 
 func ExampleNode_Minimum() {
 	var t = NewTree()
-	t.Insert(2, nil)
-	t.Insert(3, nil)
-	t.Insert(4, nil)
-	t.Insert(6, nil)
-	t.Insert(7, nil)
-	t.Insert(9, nil)
-	t.Insert(13, nil)
-	t.Insert(15, nil)
-	t.Insert(17, nil)
-	t.Insert(18, nil)
-	t.Insert(20, nil)
+	t.Insert(key(2))
+	t.Insert(key(3))
+	t.Insert(key(4))
+	t.Insert(key(6))
+	t.Insert(key(7))
+	t.Insert(key(9))
+	t.Insert(key(13))
+	t.Insert(key(15))
+	t.Insert(key(17))
+	t.Insert(key(18))
+	t.Insert(key(20))
 
-	fmt.Println(t.root.Minimum().key)
+	fmt.Println(t.root.Minimum().Value())
 	// Output:
 	// 2
 }
 
 func ExampleNode_Successor() {
 	var t = NewTree()
-	t.Insert(2, nil)
-	t.Insert(3, nil)
-	t.Insert(4, nil)
-	t.Insert(6, nil)
-	t.Insert(7, nil)
-	t.Insert(9, nil)
-	t.Insert(13, nil)
-	t.Insert(15, nil)
-	t.Insert(17, nil)
-	t.Insert(18, nil)
-	t.Insert(20, nil)
+	t.Insert(key(2))
+	t.Insert(key(3))
+	t.Insert(key(4))
+	t.Insert(key(6))
+	t.Insert(key(7))
+	t.Insert(key(9))
+	t.Insert(key(13))
+	t.Insert(key(15))
+	t.Insert(key(17))
+	t.Insert(key(18))
+	t.Insert(key(20))
 
-	n := t.Search(13)
-	fmt.Println(n.Successor().key)
+	n := t.Search(key(13))
+	fmt.Println(n.Successor().Value())
 	// Output:
 	// 15
 }
 
 func ExampleNode_Predecessor() {
 	var t = NewTree()
-	t.Insert(2, nil)
-	t.Insert(3, nil)
-	t.Insert(4, nil)
-	t.Insert(6, nil)
-	t.Insert(7, nil)
-	t.Insert(9, nil)
-	t.Insert(13, nil)
-	t.Insert(15, nil)
-	t.Insert(17, nil)
-	t.Insert(18, nil)
-	t.Insert(20, nil)
+	t.Insert(key(2))
+	t.Insert(key(3))
+	t.Insert(key(4))
+	t.Insert(key(6))
+	t.Insert(key(7))
+	t.Insert(key(9))
+	t.Insert(key(13))
+	t.Insert(key(15))
+	t.Insert(key(17))
+	t.Insert(key(18))
+	t.Insert(key(20))
 
-	n := t.Search(13)
-	fmt.Println(n.Predecessor().key)
+	n := t.Search(key(13))
+	fmt.Println(n.Predecessor().Value())
 	// Output:
 	// 9
 }

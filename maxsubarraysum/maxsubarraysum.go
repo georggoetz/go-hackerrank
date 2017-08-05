@@ -1,4 +1,4 @@
-// The MAximum Subarray Sum: https://www.hackerrank.com/challenges/maximum-subarray-sum
+// The Maximum Subarray Sum: https://www.hackerrank.com/challenges/maximum-subarray-sum
 package main
 
 import (
@@ -8,6 +8,16 @@ import (
 
 	"github.com/georggoetz/hackerrank/datastructures"
 )
+
+type key int
+
+func (n key) Less(v interface{}) bool {
+	return n < v.(key)
+}
+
+func intValue(n *rbtree.Node) int {
+	return int(n.Value().(key))
+}
 
 func maxi(x, y int) int {
 	if y > x {
@@ -23,9 +33,9 @@ func maxSubarraySum(a []int, m int) int {
 	for i := 0; i < len(a); i++ {
 		prefix = (prefix + a[i]%m) % m
 		ans = maxi(ans, prefix)
-		n = t.Insert(prefix, nil).Successor()
+		n = t.Insert(key(prefix)).Successor()
 		if n != nil {
-			ans = maxi(ans, (prefix-n.Key()+m)%m)
+			ans = maxi(ans, (prefix-intValue(n)+m)%m)
 		}
 	}
 	return ans
