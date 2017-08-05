@@ -34,12 +34,11 @@ func blackHeight(n *Node) int {
 func TestTree_Insert(t *testing.T) {
 	rand.Seed(time.Now().UTC().UnixNano())
 	r := NewTree()
-	var n *Node
 	var v int
-	for i := 0; i < 1000000; i++ {
+	for i := 0; i < 10000; i++ {
 		v = rand.Int()
-		n = r.Insert(key(v))
-		if blackHeight(n) == -1 {
+		r.Insert(key(v))
+		if blackHeight(r.root) == -1 {
 			t.Error("invalid black height")
 		}
 	}
