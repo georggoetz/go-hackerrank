@@ -206,21 +206,3 @@ func (t *Tree) rightRotate(x *Node) {
 	y.right = x
 	x.parent = y
 }
-
-func BlackHeight(n *Node) int {
-	if n == nil {
-		return 0
-	}
-	l := BlackHeight(n.left)
-	r := BlackHeight(n.right)
-	a := 0
-	if n.color == black {
-		a = 1
-	}
-
-	if l == -1 || r == -1 || l != r {
-		return -1
-	} else {
-		return l + a
-	}
-}
