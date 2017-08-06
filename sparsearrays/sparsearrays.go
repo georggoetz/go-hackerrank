@@ -1,3 +1,4 @@
+// Sparse Arrays: https://www.hackerrank.com/challenges/sparse-arrays
 package main
 
 import (
@@ -51,8 +52,7 @@ func SparseArrays(r io.Reader, w io.Writer) error {
 }
 
 func main() {
-	err := SparseArrays(os.Stdin, os.Stdout)
-	if err != nil {
+	if err := SparseArrays(os.Stdin, os.Stdout); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
 	}
 }
