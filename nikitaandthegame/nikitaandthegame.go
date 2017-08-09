@@ -1,3 +1,4 @@
+// Nikita and the Game: https://www.hackerrank.com/contests/hourrank-7/challenges/array-splitting
 package main
 
 import (
