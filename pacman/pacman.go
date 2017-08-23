@@ -1,3 +1,4 @@
+// PacMan DFS: https://www.hackerrank.com/challenges/pacman-dfs
 package main
 
 import (
