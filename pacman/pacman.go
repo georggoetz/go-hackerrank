@@ -1,4 +1,5 @@
 // PacMan DFS: https://www.hackerrank.com/challenges/pacman-dfs
+// PacMan BFS: https://www.hackerrank.com/challenges/pacman-bfs
 package main
 
 import (
@@ -7,11 +8,17 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
+	"strings"
 )
 
 type node struct {
 	row, col int
 	path     *list.List
+}
+
+func (n node) toString() string {
+	return strings.Join([]string{strconv.Itoa(n.row), strconv.Itoa(n.col)}, " ")
 }
 
 var directions = []node{
@@ -23,8 +30,7 @@ var directions = []node{
 func dfs(row, col, pacmanRow, pacmanCol, foodRow, foodCol int, grid [][]rune) (*list.List, *list.List) {
 	var v, w node
 	var nextRow, nextCol int
-	stack := list.New()
-	explored := list.New()
+	stack, explored := list.New(), list.New()
 	stack.PushFront(node{row: pacmanRow, col: pacmanCol, path: list.New()})
 	for stack.Len() > 0 {
 		v = stack.Remove(stack.Front()).(node)
@@ -49,9 +55,42 @@ func dfs(row, col, pacmanRow, pacmanCol, foodRow, foodCol int, grid [][]rune) (*
 	return explored, v.path
 }
 
-func DepthFirstSearch(r io.Reader, w io.Writer) {
+func bfs(row, col, pacmanRow, pacmanCol, foodRow, foodCol int, grid [][]rune) (*list.List, *list.List) {
+	var v, w node
+	var nextRow, nextCol int
+	explored, queue := list.New(), list.New()
+	set := make(map[string]bool)
+	v = node{row: pacmanRow, col: pacmanCol, path: list.New()}
+	set[v.toString()] = true
+	queue.PushFront(v)
+	for queue.Len() > 0 {
+		v = queue.Remove(queue.Back()).(node)
+		explored.PushBack(v)
+		if v.row == foodRow && v.col == foodCol {
+			v.path.PushBack(v)
+			break
+		}
+		for _, direction := range directions {
+			nextRow, nextCol = v.row+direction.row, v.col+direction.col
+			if nextRow < 0 || nextRow >= row || nextCol < 0 || nextCol >= col ||
+				(grid[nextRow][nextCol] != '.' && grid[nextRow][nextCol] != '-') {
+				continue
+			}
+			w = node{row: nextRow, col: nextCol, path: list.New()}
+			if _, ok := set[w.toString()]; !ok {
+				set[w.toString()] = true
+				queue.PushFront(w)
+				w.path.PushFrontList(v.path)
+				w.path.PushBack(v)
+			}
+		}
+	}
+	return explored, v.path
+}
+
+func readInput(r io.Reader) (int, int, int, int, int, int, [][]rune) {
 	var row, col, pacmanRow, pacmanCol, foodRow, foodCol int
-	var n node
+
 	scanner := bufio.NewScanner(r)
 
 	fmt.Fscanf(r, "%d %d\n", &pacmanRow, &pacmanCol)
@@ -63,19 +102,28 @@ func DepthFirstSearch(r io.Reader, w io.Writer) {
 		grid[y] = []rune(scanner.Text())[:col]
 	}
 
-	explored, path := dfs(row, col, pacmanRow, pacmanCol, foodRow, foodCol, grid)
+	return row, col, pacmanRow, pacmanCol, foodRow, foodCol, grid
+}
 
-	fmt.Fprintln(w, explored.Len())
-	for e := explored.Front(); e != nil; e = e.Next() {
+func printPath(len int, nodes *list.List, w io.Writer) {
+	var n node
+	fmt.Fprintln(w, len)
+	for e := nodes.Front(); e != nil; e = e.Next() {
 		n = e.Value.(node)
-		fmt.Fprintf(w, "%d %d\n", n.row, n.col)
+		fmt.Fprintln(w, n.toString())
 	}
+}
 
-	fmt.Fprintln(w, path.Len()-1)
-	for e := path.Front(); e != nil; e = e.Next() {
-		n = e.Value.(node)
-		fmt.Fprintf(w, "%d %d\n", n.row, n.col)
-	}
+func DepthFirstSearch(r io.Reader, w io.Writer) {
+	explored, path := dfs(readInput(r))
+	printPath(explored.Len(), explored, w)
+	printPath(path.Len()-1, path, w)
+}
+
+func BreadthFirstSearch(r io.Reader, w io.Writer) {
+	explored, path := bfs(readInput(r))
+	printPath(explored.Len(), explored, w)
+	printPath(path.Len()-1, path, w)
 }
 
 func main() {
