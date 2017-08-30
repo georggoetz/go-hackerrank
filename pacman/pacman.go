@@ -1,5 +1,6 @@
 // PacMan DFS: https://www.hackerrank.com/challenges/pacman-dfs
 // PacMan BFS: https://www.hackerrank.com/challenges/pacman-bfs
+// PacMan A*: https://www.hackerrank.com/challenges/pacman-astar
 package main
 
 import (
