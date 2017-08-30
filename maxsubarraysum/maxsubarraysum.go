@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/georggoetz/hackerrank/datastructures"
+	"github.com/georggoetz/hackerrank/maxsubarraysum/rbtree"
 )
 
 type key int
