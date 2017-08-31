@@ -1,10 +1,11 @@
-// The Maximum Subarray: https://www.hackerrank.com/challenges/maxsubarray
-package main
+package maxsubarray
 
 import (
+	"bufio"
 	"fmt"
 	"io"
-	"os"
+	"strconv"
+	"strings"
 )
 
 func maxi(x, y int) int {
@@ -14,7 +15,12 @@ func maxi(x, y int) int {
 	return x
 }
 
-// Kadane's linear time algorithm: https://en.wikipedia.org/wiki/Maximum_subarray_problem
+// maxSubarray finds the maximum sum of a contiguous subarray of the given
+// array a. Kadane's algorithm - see http://en.wikipedia.org/wiki/Maximum_subarray_problem -
+// solves the problem in linear time. The idea is that the maximum subarray
+// ending at position i + 1 includes the maximum subarray ending at position i
+// as prefix, or it doesn't. When B(i) denotes the subarray ending at i, then
+// B(i+1) = max(A(i+1), A(i+1) + B(i))
 func maxSubarraySum(a []int) int {
 	first := a[0]
 	sum, max := first, first
@@ -25,6 +31,8 @@ func maxSubarraySum(a []int) int {
 	return sum
 }
 
+// maxSum calculates the maximum sum of the elements of the given array a.
+// Simply adds all positive elements.
 func maxSum(a []int) int {
 	sum, max := 0, a[0]
 	for _, elem := range a {
@@ -41,32 +49,24 @@ func maxSum(a []int) int {
 	return max
 }
 
-func MaxSubarray(r io.Reader, w io.Writer) error {
-	var q, n int
-	if _, err := fmt.Fscanf(r, "%d\n", &q); err != nil {
-		return err
-	}
+// MaxSubarray finds the maximum possible sum of a
+// - contiguous subarray
+// - non-contiguous (not necessarily contiguous) subarray
+// of a given array.
+//
+// The detailed description can be found there: http://www.hackerrank.com/challenges/maxsubarray
+func MaxSubarray(r io.Reader, w io.Writer) {
+	scanner := bufio.NewScanner(r)
+	scanner.Scan()
+	q, _ := strconv.Atoi(scanner.Text())
 	for i := 0; i < q; i++ {
-		if _, err := fmt.Fscanf(r, "%d\n", &n); err != nil {
-			return err
-		}
+		scanner.Scan()
+		n, _ := strconv.Atoi(scanner.Text())
 		a := make([]int, n)
-		format := "%d"
-		for j := 0; j < n; j++ {
-			if j == n-1 {
-				format = format + "\n"
-			}
-			if _, err := fmt.Fscanf(r, format, &a[j]); err != nil {
-				return err
-			}
+		scanner.Scan()
+		for i, tok := range strings.Fields(scanner.Text()) {
+			a[i], _ = strconv.Atoi(tok)
 		}
 		fmt.Fprintf(w, "%d %d\n", maxSubarraySum(a), maxSum(a))
-	}
-	return nil
-}
-
-func main() {
-	if err := MaxSubarray(os.Stdin, os.Stdout); err != nil {
-		panic(err)
 	}
 }
