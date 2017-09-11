@@ -64,7 +64,7 @@ func MaxSubarray(r io.Reader, w io.Writer) {
 		n, _ := strconv.Atoi(scanner.Text())
 		a := make([]int, n)
 		scanner.Scan()
-		for i, tok := range strings.Fields(scanner.Text()) {
+		for i, tok := range strings.Fields(scanner.Text())[:n] {
 			a[i], _ = strconv.Atoi(tok)
 		}
 		fmt.Fprintf(w, "%d %d\n", maxSubarraySum(a), maxSum(a))

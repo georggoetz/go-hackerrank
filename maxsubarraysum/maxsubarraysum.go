@@ -1,12 +1,10 @@
-// The Maximum Subarray Sum: https://www.hackerrank.com/challenges/maximum-subarray-sum
-package main
+package maxarraysum
 
 import (
 	"fmt"
 	"io"
-	"os"
 
-	"github.com/georggoetz/hackerrank/maxsubarraysum/rbtree"
+	"github.com/georggoetz/hackerrank/rbtree"
 )
 
 type key int
@@ -16,7 +14,7 @@ func (n key) Less(v interface{}) bool {
 }
 
 func intValue(n *rbtree.Node) int {
-	return int(n.Value().(key))
+	return int(n.Value.(key))
 }
 
 func maxi(x, y int) int {
@@ -41,38 +39,26 @@ func maxSubarraySum(a []int, m int) int {
 	return ans
 }
 
+// MaxSubarraySum finds the maximum possible sum modulo m of a contiguous
+// subarray of a given array a.
+//
+// Details: http://www.hackerrank.com/challenges/maximum-subarray-sum
 func MaxSubarraySum(r io.Reader, w io.Writer) error {
 	var q, n, m int
 	var a []int
 	var f string
-	if _, err := fmt.Fscanf(r, "%d\n", &q); err != nil {
-		return err
-	}
+	fmt.Fscanf(r, "%d\n", &q)
 	for i := 0; i < q; i++ {
-		if _, err := fmt.Fscanf(r, "%d", &n); err != nil {
-			return err
-		}
+		fmt.Fscanf(r, "%d %d\n", &n, &m)
 		a = make([]int, n)
-		if _, err := fmt.Fscanf(r, "%d\n", &m); err != nil {
-			return err
-		}
 		f = "%d"
 		for j := 0; j < n; j++ {
 			if j == n-1 {
 				f += "\n"
 			}
-			if _, err := fmt.Fscanf(r, f, &a[j]); err != nil {
-				return err
-			}
+			fmt.Fscanf(r, f, &a[j])
 		}
 		fmt.Fprintf(w, "%d\n", maxSubarraySum(a, m))
 	}
 	return nil
-}
-
-func main() {
-	err := MaxSubarraySum(os.Stdin, os.Stdout)
-	if err != nil {
-		panic(err)
-	}
 }

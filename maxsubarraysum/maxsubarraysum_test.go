@@ -1,4 +1,4 @@
-package main
+package maxarraysum
 
 import (
 	"fmt"
@@ -11,23 +11,20 @@ import (
 )
 
 func ExampleMaxSubarraySum() {
-	const TestData = `6
-		5 7
-		3 3 9 9 5
-		4 1
-		1 2 3 4
-		4 2
-		1 2 3 4
-		4 3
-		1 2 3 4
-		4 4
-		1 2 3 4
-		4 5
-		1 2 3 4`
-	err := MaxSubarraySum(strings.NewReader(TestData), os.Stdout)
-	if err != nil {
-		fmt.Fprint(os.Stderr, err.Error())
-	}
+	s := `6
+	5 7
+	3 3 9 9 5
+	4 1
+	1 2 3 4
+	4 2
+	1 2 3 4
+	4 3
+	1 2 3 4
+	4 4
+	1 2 3 4
+	4 5
+	1 2 3 4`
+	MaxSubarraySum(strings.NewReader(s), os.Stdout)
 	// Output:
 	// 6
 	// 0

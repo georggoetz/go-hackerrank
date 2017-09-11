@@ -62,8 +62,8 @@ func testTree() *Tree {
 
 func ExampleTree_Search() {
 	t := testTree()
-	fmt.Println(t.Search(key(4)).Value())
-	fmt.Println(t.Search(key(2)).Value())
+	fmt.Println(t.Search(key(4)).Value)
+	fmt.Println(t.Search(key(2)).Value)
 	fmt.Println(t.Search(key(5)))
 	// Output:
 	// 4
@@ -73,14 +73,14 @@ func ExampleTree_Search() {
 
 func ExampleNode_Maximum() {
 	t := testTree()
-	fmt.Println(t.root.Maximum().Value())
+	fmt.Println(t.root.Maximum().Value)
 	// Output:
 	// 20
 }
 
 func ExampleNode_Minimum() {
 	t := testTree()
-	fmt.Println(t.root.Minimum().Value())
+	fmt.Println(t.root.Minimum().Value)
 	// Output:
 	// 2
 }
@@ -88,7 +88,7 @@ func ExampleNode_Minimum() {
 func ExampleNode_Successor() {
 	t := testTree()
 	n := t.Search(key(13))
-	fmt.Println(n.Successor().Value())
+	fmt.Println(n.Successor().Value)
 	// Output:
 	// 15
 }
@@ -96,7 +96,7 @@ func ExampleNode_Successor() {
 func ExampleNode_Predecessor() {
 	t := testTree()
 	n := t.Search(key(13))
-	fmt.Println(n.Predecessor().Value())
+	fmt.Println(n.Predecessor().Value)
 	// Output:
 	// 9
 }

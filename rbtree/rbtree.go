@@ -20,21 +20,17 @@ func (t *Tree) Size() int {
 }
 
 type Node struct {
-	value  Interface
+	Value  Interface
 	color  color
 	parent *Node
 	left   *Node
 	right  *Node
 }
 
-func (n *Node) Value() interface{} {
-	return n.value
-}
-
 func (n *Node) Search(v Interface) *Node {
 	x := n
-	for x != nil && (v.Less(x.value) || x.value.Less(v)) {
-		if v.Less(x.value) {
+	for x != nil && (v.Less(x.Value) || x.Value.Less(v)) {
+		if v.Less(x.Value) {
 			x = x.left
 		} else {
 			x = x.right
@@ -97,10 +93,10 @@ func (t *Tree) Search(v Interface) *Node {
 }
 
 func (t *Tree) Insert(v Interface) *Node {
-	x, y, z := t.root, (*Node)(nil), &Node{value: v, color: red}
+	x, y, z := t.root, (*Node)(nil), &Node{Value: v, color: red}
 	for x != nil {
 		y = x
-		if z.value.Less(x.value) {
+		if z.Value.Less(x.Value) {
 			x = x.left
 		} else {
 			x = x.right
@@ -109,7 +105,7 @@ func (t *Tree) Insert(v Interface) *Node {
 	z.parent = y
 	if y == nil {
 		t.root = z
-	} else if z.value.Less(y.value) {
+	} else if z.Value.Less(y.Value) {
 		y.left = z
 	} else {
 		y.right = z
