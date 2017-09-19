@@ -194,7 +194,7 @@ func (p *puzzle) path() []move {
 }
 
 func (p *puzzle) solve() ([]move, error) {
-	db := rbtree.NewTree()
+	db := rbtree.New()
 	q := priorityqueue.New(priority{})
 	p.g = 0
 	p.open = q.Push(p, p.manhattan())

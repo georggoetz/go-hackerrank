@@ -81,7 +81,7 @@ func (n *Node) Predecessor() *Node {
 	return y
 }
 
-func NewTree() *Tree {
+func New() *Tree {
 	return &Tree{}
 }
 

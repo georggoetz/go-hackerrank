@@ -33,7 +33,7 @@ func blackHeight(n *Node) int {
 
 func TestTree_Insert(t *testing.T) {
 	rand.Seed(time.Now().UTC().UnixNano())
-	r := NewTree()
+	r := New()
 	var v int
 	for i := 0; i < 10000; i++ {
 		v = rand.Int()
@@ -45,7 +45,7 @@ func TestTree_Insert(t *testing.T) {
 }
 
 func testTree() *Tree {
-	t := NewTree()
+	t := New()
 	t.Insert(key(2))
 	t.Insert(key(3))
 	t.Insert(key(4))

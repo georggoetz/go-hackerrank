@@ -19,7 +19,7 @@ func intValue(n *rbtree.Node) int {
 }
 
 func maxSubarraySum(a []int, m int) int {
-	t := rbtree.NewTree()
+	t := rbtree.New()
 	var n *rbtree.Node
 	prefix, ans := 0, 0
 	for i := 0; i < len(a); i++ {
