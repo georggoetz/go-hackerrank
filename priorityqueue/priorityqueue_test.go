@@ -2,16 +2,16 @@ package priorityqueue
 
 import "testing"
 
-type minprio int
+type minComparer struct{}
 
-func (prio minprio) Less(x interface{}) bool {
-	return prio < x.(minprio)
+func (c minComparer) Less(x, y interface{}) bool {
+	return x.(int) < y.(int)
 }
 
-type maxprio int
+type maxComparer struct{}
 
-func (prio maxprio) Less(x interface{}) bool {
-	return prio > x.(maxprio)
+func (c maxComparer) Less(x, y interface{}) bool {
+	return x.(int) > y.(int)
 }
 
 func checkLength(t *testing.T, pq *PriorityQueue, len int) {
@@ -55,36 +55,36 @@ func checkPQPointers(t *testing.T, pq *PriorityQueue, is []*Item) {
 
 func TestPriorityQueue(t *testing.T) {
 	// Empty priority queue
-	pq := New(0)
+	pq := New(minComparer{})
 	checkPQPointers(t, pq, []*Item{})
 
 	// Check Pop() returning the item with min priority
-	pq.Init(3)
-	i0 := pq.Push(nil, minprio(2))
-	i1 := pq.Push(nil, minprio(1))
-	i2 := pq.Push(nil, minprio(3))
+	pq.Init(minComparer{})
+	i0 := pq.Push(nil, 2)
+	i1 := pq.Push(nil, 1)
+	i2 := pq.Push(nil, 3)
 	checkPQPointers(t, pq, []*Item{i1, i0, i2})
 
 	// Check Pop() returning the item with max priority
-	pq.Init(3)
-	i0 = pq.Push(nil, maxprio(2))
-	i1 = pq.Push(nil, maxprio(1))
-	i2 = pq.Push(nil, maxprio(3))
+	pq.Init(maxComparer{})
+	i0 = pq.Push(nil, 2)
+	i1 = pq.Push(nil, 1)
+	i2 = pq.Push(nil, 3)
 	checkPQPointers(t, pq, []*Item{i2, i0, i1})
 
 	// Check Fix()
-	pq.Init(3)
-	i0 = pq.Push(nil, minprio(2))
-	i1 = pq.Push(nil, minprio(1))
-	i2 = pq.Push(nil, minprio(3))
-	pq.Fix(i1, minprio(4))
+	pq.Init(minComparer{})
+	i0 = pq.Push(nil, 2)
+	i1 = pq.Push(nil, 1)
+	i2 = pq.Push(nil, 3)
+	pq.Fix(i1, 4)
 	checkPQPointers(t, pq, []*Item{i0, i2, i1})
 
 	// Check Remove()
-	pq.Init(3)
-	i0 = pq.Push(nil, minprio(2))
-	i1 = pq.Push(nil, minprio(1))
-	i2 = pq.Push(nil, minprio(3))
+	pq.Init(minComparer{})
+	i0 = pq.Push(nil, 2)
+	i1 = pq.Push(nil, 1)
+	i2 = pq.Push(nil, 3)
 	pq.Remove(i1)
 	checkPQPointers(t, pq, []*Item{i0, i2})
 }

@@ -13,7 +13,7 @@ import (
 // must not be negative. See: https://www.hackerrank.com/challenges/pacman-ucs
 func DijkstraShortestPath(g *graph.Graph, start, end *graph.Vertex) *list.List {
 	n := g.Vertices()
-	q := priorityqueue.New(n)
+	q := priorityqueue.New(minComparer{})
 	items := make(map[*graph.Vertex]*priorityqueue.Item)
 	dist := make(map[*graph.Vertex]int)
 	prev := make(map[*graph.Vertex]*graph.Vertex)
@@ -23,12 +23,12 @@ func DijkstraShortestPath(g *graph.Graph, start, end *graph.Vertex) *list.List {
 		prev[u] = nil
 		if u != start {
 			dist[u] = math.MaxInt32
-			items[u] = q.Push(u, minprio(dist[u]))
+			items[u] = q.Push(u, dist[u])
 		}
 	}
 
 	dist[start] = 0
-	items[start] = q.Push(start, minprio(0))
+	items[start] = q.Push(start, 0)
 
 	for q.Len() > 0 {
 		u := q.Pop().Value.(*graph.Vertex)
@@ -39,7 +39,7 @@ func DijkstraShortestPath(g *graph.Graph, start, end *graph.Vertex) *list.List {
 			if v, alt := e.V, dist[u]+e.Weight.(int); alt < dist[v] {
 				dist[v] = alt
 				prev[v] = u
-				q.Fix(items[v], minprio(alt))
+				q.Fix(items[v], alt)
 			}
 		}
 	}

@@ -13,24 +13,21 @@ import (
 // See: https://www.hackerrank.com/challenges/pacman-astar
 func AstarShortestPath(g *graph.Graph, start, end *graph.Vertex) *list.List {
 	n := g.Vertices()
-	fScore := make(map[*graph.Vertex]int)
 	gScore := make(map[*graph.Vertex]int)
 	prev := make(map[*graph.Vertex]*graph.Vertex)
 	closed := make(map[*graph.Vertex]bool)
 	open := make(map[*graph.Vertex]*priorityqueue.Item)
-	q := priorityqueue.New(1)
+	q := priorityqueue.New(minComparer{})
 
 	for i := 0; i < n; i++ {
 		u := g.Vertex(i)
 		prev[u] = nil
 		if u != start {
 			gScore[u] = math.MaxInt32
-			fScore[u] = math.MaxInt32
 		}
 	}
 
-	open[start] = q.Push(start, minprio(0))
-	fScore[start] = start.Value.(node).manhattanDist(end.Value.(node))
+	open[start] = q.Push(start, start.Value.(node).manhattanDist(end.Value.(node)))
 
 	for q.Len() > 0 {
 		u := q.Pop().Value.(*graph.Vertex)
@@ -52,9 +49,9 @@ func AstarShortestPath(g *graph.Graph, start, end *graph.Vertex) *list.List {
 			gScore[v] = tentativeG
 			f := tentativeG + v.Value.(node).manhattanDist(end.Value.(node))
 			if item, ok := open[v]; ok {
-				q.Fix(item, minprio(f))
+				q.Fix(item, f)
 			} else {
-				open[v] = q.Push(v, minprio(f))
+				open[v] = q.Push(v, f)
 			}
 		}
 	}

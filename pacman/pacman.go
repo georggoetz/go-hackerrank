@@ -11,10 +11,10 @@ import (
 	"github.com/georggoetz/hackerrank/graph"
 )
 
-type minprio int
+type minComparer struct{}
 
-func (prio minprio) Less(x interface{}) bool {
-	return prio < x.(minprio)
+func (c minComparer) Less(x, y interface{}) bool {
+	return x.(int) < y.(int)
 }
 
 type node struct {
@@ -35,12 +35,6 @@ func absi(n int) int {
 	}
 	return n
 }
-
-var directions = [4][2]int{
-	{-1, 0},
-	{0, -1},
-	{0, 1},
-	{1, 0}}
 
 func readGraph(r io.Reader) (*graph.Graph, *graph.Vertex, *graph.Vertex) {
 	var rows, cols, pacmanRow, pacmanCol, foodRow, foodCol int
@@ -68,6 +62,12 @@ func readGraph(r io.Reader) (*graph.Graph, *graph.Vertex, *graph.Vertex) {
 
 	g := graph.New(n)
 	var start, end *graph.Vertex
+
+	var directions = [4][2]int{
+		{-1, 0},
+		{0, -1},
+		{0, 1},
+		{1, 0}}
 
 	for row := range a {
 		for col, u := range a[row] {
