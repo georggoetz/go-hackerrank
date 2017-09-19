@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/georggoetz/hackerrank/math"
 )
 
 func splitEqualSum(a []int) ([]int, []int) {
@@ -30,19 +32,12 @@ func splitEqualSum(a []int) ([]int, []int) {
 	return nil, nil
 }
 
-func maxi(x, y int) int {
-	if y > x {
-		return y
-	}
-	return x
-}
-
 func solve(a []int) int {
 	x, y := splitEqualSum(a)
 	if x == nil {
 		return 0
 	}
-	return 1 + maxi(solve(x), solve(y))
+	return 1 + math.MaxInt(solve(x), solve(y))
 }
 
 func NikitaAndTheGame(r io.Reader, w io.Writer) {

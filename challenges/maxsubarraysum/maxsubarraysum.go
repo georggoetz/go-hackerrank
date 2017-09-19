@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/georggoetz/hackerrank/math"
 	"github.com/georggoetz/hackerrank/rbtree"
 )
 
@@ -17,23 +18,16 @@ func intValue(n *rbtree.Node) int {
 	return int(n.Value.(key))
 }
 
-func maxi(x, y int) int {
-	if y > x {
-		return y
-	}
-	return x
-}
-
 func maxSubarraySum(a []int, m int) int {
 	t := rbtree.NewTree()
 	var n *rbtree.Node
 	prefix, ans := 0, 0
 	for i := 0; i < len(a); i++ {
 		prefix = (prefix + a[i]%m) % m
-		ans = maxi(ans, prefix)
+		ans = math.MaxInt(ans, prefix)
 		n = t.Insert(key(prefix)).Successor()
 		if n != nil {
-			ans = maxi(ans, (prefix-intValue(n)+m)%m)
+			ans = math.MaxInt(ans, (prefix-intValue(n)+m)%m)
 		}
 	}
 	return ans

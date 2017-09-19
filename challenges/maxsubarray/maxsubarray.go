@@ -6,14 +6,9 @@ import (
 	"io"
 	"strconv"
 	"strings"
-)
 
-func maxi(x, y int) int {
-	if y > x {
-		return y
-	}
-	return x
-}
+	"github.com/georggoetz/hackerrank/math"
+)
 
 // maxSubarray finds the maximum sum of a contiguous subarray of the given
 // array a. Kadane's algorithm - see http://en.wikipedia.org/wiki/Maximum_subarray_problem -
@@ -25,8 +20,8 @@ func maxSubarraySum(a []int) int {
 	first := a[0]
 	sum, max := first, first
 	for _, elem := range a[1:] {
-		max = maxi(elem, max+elem)
-		sum = maxi(max, sum)
+		max = math.MaxInt(elem, max+elem)
+		sum = math.MaxInt(max, sum)
 	}
 	return sum
 }

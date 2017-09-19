@@ -8,6 +8,7 @@ import (
 	"math"
 	"strconv"
 
+	moremath "github.com/georggoetz/hackerrank/math"
 	"github.com/georggoetz/hackerrank/priorityqueue"
 	"github.com/georggoetz/hackerrank/rbtree"
 )
@@ -44,13 +45,6 @@ const (
 
 func (p priority) Less(x, y interface{}) bool {
 	return x.(int) < y.(int)
-}
-
-func absi(n int) int {
-	if n < 0 {
-		return -n
-	}
-	return n
 }
 
 func (t tiles) indexOf(v int) (int, int, bool) {
@@ -151,7 +145,7 @@ func (p *puzzle) manhattan() int {
 	for r := range p.tiles {
 		for c := range p.tiles[r] {
 			if v := p.tiles[r][c]; v != 0 {
-				d += absi(r-(v/n)) + absi(c-(v%n))
+				d += moremath.AbsInt(r-(v/n)) + moremath.AbsInt(c-(v%n))
 			}
 		}
 	}

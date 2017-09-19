@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/georggoetz/hackerrank/graph"
+	"github.com/georggoetz/hackerrank/math"
 )
 
 type minComparer struct{}
@@ -26,14 +27,7 @@ func (n node) toString() string {
 }
 
 func (n node) manhattanDist(x node) int {
-	return absi(n.row-x.row) + absi(n.col-x.col)
-}
-
-func absi(n int) int {
-	if n < 0 {
-		return -n
-	}
-	return n
+	return math.AbsInt(n.row-x.row) + math.AbsInt(n.col-x.col)
 }
 
 func readGraph(r io.Reader) (*graph.Graph, *graph.Vertex, *graph.Vertex) {
