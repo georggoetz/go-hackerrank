@@ -1,14 +1,15 @@
-// Pairs: https://www.hackerrank.com/challenges/pairs
-package main
+// http://www.hackerrank.com/challenges/pairs
+
+package pairs
 
 import (
 	"fmt"
 	"io"
-	"os"
 	"sort"
 )
 
-func solve(a []int, k int) int {
+// Solve returns the number of pairs in a whose difference is k.
+func Solve(a []int, k int) int {
 	ans, i, j, n := 0, 0, 0, len(a)
 	sort.Ints(a)
 	for i < n && j < n {
@@ -25,30 +26,13 @@ func solve(a []int, k int) int {
 	return ans
 }
 
-func Pairs(r io.Reader, w io.Writer) error {
+func read(r io.Reader) ([]int, int) {
 	var n, k int
-	if _, err := fmt.Fscanf(r, "%d", &n); err != nil {
-		return err
-	}
-	if _, err := fmt.Fscanf(r, "%d\n", &k); err != nil {
-		return err
-	}
+	fmt.Fscanf(r, "%d %d\n", &n, &k)
 	a := make([]int, n)
-	f := "%d"
-	for i := 0; i < n; i++ {
-		if i == n-1 {
-			f += "\n"
-		}
-		if _, err := fmt.Fscanf(r, f, &a[i]); err != nil {
-			return err
-		}
+	for i := 0; i < n-1; i++ {
+		fmt.Fscanf(r, "%d", &a[i])
 	}
-	fmt.Fprintf(w, "%d\n", solve(a, k))
-	return nil
-}
-
-func main() {
-	if err := Pairs(os.Stdin, os.Stdout); err != nil {
-		fmt.Fprintf(os.Stderr, err.Error())
-	}
+	fmt.Fscanf(r, "%d\n", &a[n-1])
+	return a, k
 }

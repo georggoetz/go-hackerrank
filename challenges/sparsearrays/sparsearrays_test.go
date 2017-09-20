@@ -1,12 +1,12 @@
-package main
+package sparsearrays
 
 import (
-	"os"
+	"fmt"
 	"strings"
 )
 
-func ExampleSparseArrays() {
-	const testData = `4
+const (
+	sample = `4
     aba
     baba
     aba
@@ -15,7 +15,12 @@ func ExampleSparseArrays() {
     aba
     xzxb
     ab`
-	SparseArrays(strings.NewReader(testData), os.Stdout)
+)
+
+func ExampleSolve() {
+	for _, v := range Solve(read(strings.NewReader(sample))) {
+		fmt.Println(v)
+	}
 	// Output:
 	// 2
 	// 1
