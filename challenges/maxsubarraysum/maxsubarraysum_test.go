@@ -2,6 +2,7 @@ package maxarraysum
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -10,8 +11,8 @@ import (
 	"github.com/georggoetz/hackerrank/stringutil"
 )
 
-func ExampleMaxSubarraySum() {
-	s := `6
+const (
+	sample = `6
 	5 7
 	3 3 9 9 5
 	4 1
@@ -24,7 +25,17 @@ func ExampleMaxSubarraySum() {
 	1 2 3 4
 	4 5
 	1 2 3 4`
-	MaxSubarraySum(strings.NewReader(s), os.Stdout)
+)
+
+func run(r io.Reader, w io.Writer) {
+	a, m := read(r)
+	for i := range a {
+		fmt.Fprintf(w, "%d\n", Solve(a[i], m[i]))
+	}
+}
+
+func ExampleSolve() {
+	run(strings.NewReader(sample), os.Stdout)
 	// Output:
 	// 6
 	// 0
@@ -34,14 +45,12 @@ func ExampleMaxSubarraySum() {
 	// 4
 }
 
-func TestMaxSubarraySum(t *testing.T) {
+func TestSolve(t *testing.T) {
 	for i := 1; i <= 2; i++ {
 		w := stringutil.NewStringWriter()
 		in, _ := ioutil.ReadFile(fmt.Sprintf("./testdata/input%02d.txt", i))
 		exp, _ := ioutil.ReadFile(fmt.Sprintf("./testdata/expected%02d.txt", i))
-
-		MaxSubarraySum(strings.NewReader(string(in)), w)
-
+		run(strings.NewReader(string(in)), w)
 		if w.String() != string(exp) {
 			t.FailNow()
 		}

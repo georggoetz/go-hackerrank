@@ -1,13 +1,24 @@
-// Nikita and the Game: https://www.hackerrank.com/contests/hourrank-7/challenges/array-splitting
-package main
+// http://www.hackerrank.com/contests/hourrank-7/challenges/array-splitting
+
+package nikitaandthegame
 
 import (
 	"fmt"
 	"io"
-	"os"
 
 	"github.com/georggoetz/hackerrank/math"
 )
+
+// Solve recursively splits the given slice a into two slices of equal sum.
+// Each successful split increments the score by 1. Solve returns the
+// maximum score possible.
+func Solve(a []int) int {
+	x, y := splitEqualSum(a)
+	if x == nil {
+		return 0
+	}
+	return 1 + math.MaxInt(Solve(x), Solve(y))
+}
 
 func splitEqualSum(a []int) ([]int, []int) {
 	if len(a) <= 1 {
@@ -32,32 +43,17 @@ func splitEqualSum(a []int) ([]int, []int) {
 	return nil, nil
 }
 
-func solve(a []int) int {
-	x, y := splitEqualSum(a)
-	if x == nil {
-		return 0
-	}
-	return 1 + math.MaxInt(solve(x), solve(y))
-}
-
-func NikitaAndTheGame(r io.Reader, w io.Writer) {
+func read(r io.Reader) [][]int {
 	var t, n int
-	var a []int
 	fmt.Fscanf(r, "%d\n", &t)
+	a := make([][]int, t)
 	for i := 0; i < t; i++ {
 		fmt.Fscanf(r, "%d\n", &n)
-		a = make([]int, n)
-		f := "%d"
-		for j := 0; j < n; j++ {
-			if j == n-1 {
-				f += "\n"
-			}
-			fmt.Fscanf(r, f, &a[j])
+		a[i] = make([]int, n)
+		for j := 0; j < n-1; j++ {
+			fmt.Fscanf(r, "%d", &a[i][j])
 		}
-		fmt.Fprintf(w, "%d\n", solve(a))
+		fmt.Fscanf(r, "%d\n", &a[i][n-1])
 	}
-}
-
-func main() {
-	NikitaAndTheGame(os.Stdin, os.Stdout)
+	return a
 }

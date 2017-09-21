@@ -2,23 +2,27 @@ package fixedlengthqueries
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/georggoetz/hackerrank/stringutil"
 )
 
-const sampleInput = `5 5
-33 11 44 11 55
-1
-2
-3
-4
-5`
+const (
+	sample = `5 5
+		33 11 44 11 55
+		1
+		2
+		3
+		4
+		5`
+)
 
 func ExampleSolve() {
-	a, k := read(strings.NewReader(sampleInput))
+	a, k := read(strings.NewReader(sample))
 	for _, d := range k {
 		fmt.Println(Solve(a, d))
 	}
@@ -30,11 +34,15 @@ func ExampleSolve() {
 	// 55
 }
 
-func ExampleSolve2() {
-	a, k := read(strings.NewReader(sampleInput))
-	for _, d := range k {
-		fmt.Println(Solve2(a, d))
+func runSolve2(r io.Reader, w io.Writer) {
+	a, b := read(r)
+	for _, k := range b {
+		fmt.Fprintf(w, "%d\n", Solve2(a, k))
 	}
+}
+
+func ExampleSolve2() {
+	runSolve2(strings.NewReader(sample), os.Stdout)
 	// Output:
 	// 11
 	// 33
@@ -43,14 +51,11 @@ func ExampleSolve2() {
 	// 55
 }
 
-func TestSolve(t *testing.T) {
+func TestSolve2(t *testing.T) {
 	w := stringutil.NewStringWriter()
 	in, _ := ioutil.ReadFile("./testdata/input05.txt")
 	exp, _ := ioutil.ReadFile("./testdata/output05.txt")
-	a, k := read(strings.NewReader(string(in)))
-	for _, d := range k {
-		fmt.Fprintf(w, "%d\n", Solve2(a, d))
-	}
+	runSolve2(strings.NewReader(string(in)), w)
 	if w.String() != string(exp) {
 		t.FailNow()
 	}
