@@ -9,7 +9,7 @@ import (
 	"github.com/georggoetz/hackerrank/math"
 )
 
-// MaxSubarray finds the maximum sum of a contiguous subarray of the given
+// MaxSubarraySum finds the maximum sum of a contiguous subarray of the given
 // array a. Kadane's algorithm - see http://en.wikipedia.org/wiki/Maximum_subarray_problem -
 // solves the problem in linear time. The idea is that the maximum subarray
 // ending at position i + 1 includes the maximum subarray ending at position i
