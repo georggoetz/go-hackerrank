@@ -19,9 +19,10 @@ const (
 		1 -1 -1 -1 -1 5`
 )
 
-func ExampleMaxSubarraySum() {
+func ExampleSolve() {
 	for _, a := range read(strings.NewReader(sample)) {
-		fmt.Printf("%d %d\n", MaxSubarraySum(a), MaxSum(a))
+		x, y := Solve(a)
+		fmt.Printf("%d %d\n", x, y)
 	}
 	// Output:
 	// 10 10
