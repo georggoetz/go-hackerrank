@@ -1,9 +1,10 @@
+// http://www.hackerrank.com/challenges/n-puzzle
+
 package npuzzle
 
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"io"
 	"math"
 	"strconv"
@@ -14,20 +15,23 @@ import (
 )
 
 type tiles [][]int
-type move int
 type priority struct{}
 
-type puzzle struct {
+// Move denotes the movements of a tile of the puzzle.
+type Move int
+
+// Puzzle represents a sliding puzzle.
+type Puzzle struct {
 	n, g   int
 	open   *priorityqueue.Item
 	closed bool
-	prev   *puzzle
-	move   move
+	prev   *Puzzle
+	move   Move
 	tiles  tiles
 }
 
 var (
-	moves = map[move]struct {
+	moves = map[Move]struct {
 		row, col int
 	}{
 		up:    {row: -1, col: 0},
@@ -37,11 +41,97 @@ var (
 )
 
 const (
-	up move = iota
+	up Move = iota
 	down
 	left
 	right
 )
+
+// NewPuzzle returns a new puzzle of the given size and tiles.
+func NewPuzzle(n int, tiles []int) *Puzzle {
+	return new(Puzzle).init(n, tiles)
+}
+
+// Less compares two puzzles. On the occurence of the first difference it
+// returns true if the number on the tile of this puzzle is less than on the
+// other one. Otherwise, it returns false.
+func (p *Puzzle) Less(x interface{}) bool {
+	q := x.(*Puzzle)
+	for r := range p.tiles {
+		for c := range p.tiles[r] {
+			if v, w := p.tiles[r][c], q.tiles[r][c]; v != w {
+				return v < w
+			}
+		}
+	}
+	return false
+}
+
+// ReadPuzzle returns a new puzzle created from the spcified reader. See
+// hackerrank for input details.
+func ReadPuzzle(r io.Reader) *Puzzle {
+	scanner := bufio.NewScanner(r)
+	scanner.Scan()
+	n, _ := strconv.Atoi(scanner.Text())
+	len := n * n
+	tiles := make([]int, len)
+	for i := 0; i < len && scanner.Scan(); i++ {
+		tiles[i], _ = strconv.Atoi(scanner.Text())
+	}
+	return NewPuzzle(n, tiles)
+}
+
+// Solve calculates the moves required to solve the puzzle. It applies the
+// A* algorithm to determine an optimal solution.
+func (p *Puzzle) Solve() ([]Move, error) {
+	db := rbtree.New()
+	q := priorityqueue.New(priority{})
+	p.g = 0
+	p.open = q.Push(p, p.manhattan())
+	db.Insert(p)
+	for q.Len() > 0 {
+		u := q.Pop().Value.(*Puzzle)
+		if u.goal() {
+			return u.path(), nil
+		}
+		u.closed = true
+		for k, v := range u.next(db) {
+			if v.closed {
+				continue
+			}
+			tentativeG := u.g + 1
+			if v.open != nil && tentativeG >= v.g {
+				continue
+			}
+			v.move = k
+			v.prev = u
+			v.g = tentativeG
+			f := tentativeG + v.manhattan()
+			if v.open != nil {
+				q.Fix(v.open, f)
+			} else {
+				v.open = q.Push(v, f)
+				db.Insert(v)
+			}
+		}
+	}
+	return []Move{}, errors.New("path not found")
+}
+
+// String returns a move as string.
+func (m Move) String() (s string) {
+	switch m {
+	case up:
+		s = "UP"
+	case down:
+		s = "DOWN"
+	case left:
+		s = "LEFT"
+	case right:
+		s = "RIGHT"
+	}
+	return
+}
 
 func (p priority) Less(x, y interface{}) bool {
 	return x.(int) < y.(int)
@@ -70,51 +160,7 @@ func (t tiles) swap(r, c, dr, dc int) bool {
 	return false
 }
 
-func readPuzzle(r io.Reader) *puzzle {
-	scanner := bufio.NewScanner(r)
-	scanner.Scan()
-	n, _ := strconv.Atoi(scanner.Text())
-	len := n * n
-	tiles := make([]int, len)
-	for i := 0; i < len && scanner.Scan(); i++ {
-		tiles[i], _ = strconv.Atoi(scanner.Text())
-	}
-	return newPuzzle(n, tiles)
-}
-
-func printMoves(moves []move) {
-	fmt.Println(len(moves))
-	for _, move := range moves {
-		switch move {
-		case up:
-			fmt.Println("UP")
-		case down:
-			fmt.Println("DOWN")
-		case left:
-			fmt.Println("LEFT")
-		case right:
-			fmt.Println("RIGHT")
-		}
-	}
-}
-
-func newPuzzle(n int, tiles []int) *puzzle {
-	return new(puzzle).init(n, tiles)
-}
-
-func (p *puzzle) Less(x interface{}) bool {
-	q := x.(*puzzle)
-	for r := range p.tiles {
-		for c := range p.tiles[r] {
-			if v, w := p.tiles[r][c], q.tiles[r][c]; v != w {
-				return v < w
-			}
-		}
-	}
-	return false
-}
-
-func (p *puzzle) init(n int, tiles []int) *puzzle {
+func (p *Puzzle) init(n int, tiles []int) *Puzzle {
 	p.n = n
 	p.open = nil
 	p.prev = nil
@@ -129,9 +175,9 @@ func (p *puzzle) init(n int, tiles []int) *puzzle {
 	return p
 }
 
-func (p *puzzle) copy() *puzzle {
+func (p *Puzzle) copy() *Puzzle {
 	n := p.n
-	q := newPuzzle(n, make([]int, n*n))
+	q := NewPuzzle(n, make([]int, n*n))
 	for r := range q.tiles {
 		for c := range q.tiles[r] {
 			q.tiles[r][c] = p.tiles[r][c]
@@ -140,7 +186,7 @@ func (p *puzzle) copy() *puzzle {
 	return q
 }
 
-func (p *puzzle) manhattan() int {
+func (p *Puzzle) manhattan() int {
 	n, d := p.n, 0
 	for r := range p.tiles {
 		for c := range p.tiles[r] {
@@ -152,7 +198,7 @@ func (p *puzzle) manhattan() int {
 	return d
 }
 
-func (p *puzzle) goal() bool {
+func (p *Puzzle) goal() bool {
 	n := p.n
 	for r := range p.tiles {
 		for c := range p.tiles[r] {
@@ -164,14 +210,14 @@ func (p *puzzle) goal() bool {
 	return true
 }
 
-func (p *puzzle) next(db *rbtree.Tree) map[move]*puzzle {
-	a := make(map[move]*puzzle)
+func (p *Puzzle) next(db *rbtree.Tree) map[Move]*Puzzle {
+	a := make(map[Move]*Puzzle)
 	if r, c, ok := p.tiles.indexOf(0); ok {
 		for m, v := range moves {
 			q := p.copy()
 			if q.tiles.swap(r, c, v.row, v.col) {
 				if rec := db.Search(q); rec != nil {
-					q = rec.Value.(*puzzle)
+					q = rec.Value.(*Puzzle)
 				}
 				a[m] = q
 			}
@@ -180,8 +226,8 @@ func (p *puzzle) next(db *rbtree.Tree) map[move]*puzzle {
 	return a
 }
 
-func (p *puzzle) path() []move {
-	a := make([]move, 0)
+func (p *Puzzle) path() []Move {
+	a := make([]Move, 0)
 	x := p
 	for x != nil {
 		a = append(a, x.move)
@@ -191,39 +237,4 @@ func (p *puzzle) path() []move {
 		a[i], a[j] = a[j], a[i]
 	}
 	return a[1:len(a)]
-}
-
-func (p *puzzle) solve() ([]move, error) {
-	db := rbtree.New()
-	q := priorityqueue.New(priority{})
-	p.g = 0
-	p.open = q.Push(p, p.manhattan())
-	db.Insert(p)
-	for q.Len() > 0 {
-		u := q.Pop().Value.(*puzzle)
-		if u.goal() {
-			return u.path(), nil
-		}
-		u.closed = true
-		for k, v := range u.next(db) {
-			if v.closed {
-				continue
-			}
-			tentativeG := u.g + 1
-			if v.open != nil && tentativeG >= v.g {
-				continue
-			}
-			v.move = k
-			v.prev = u
-			v.g = tentativeG
-			f := tentativeG + v.manhattan()
-			if v.open != nil {
-				q.Fix(v.open, f)
-			} else {
-				v.open = q.Push(v, f)
-				db.Insert(v)
-			}
-		}
-	}
-	return []move{}, errors.New("path not found")
 }
