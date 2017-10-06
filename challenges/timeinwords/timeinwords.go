@@ -1,3 +1,5 @@
+// http://www.hackerrank.com/challenges/the-time-in-words
+
 package timeinwords
 
 import (
@@ -37,7 +39,7 @@ var words = map[int]string{
 	29: "twenty nine",
 	30: "half"}
 
-// Converts returns the time given by the numerals h and m into words.
+// Convert returns the time given by the numerals h and m into words.
 func Convert(h, m int) string {
 	if m == 0 {
 		return words[h] + " o' clock"
