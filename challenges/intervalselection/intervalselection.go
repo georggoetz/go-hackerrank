@@ -1,3 +1,5 @@
+// http://www.hackerrank.com/challenges/interval-selection
+
 package intervalselection
 
 import (
@@ -47,15 +49,14 @@ func Solve(r io.Reader, w io.Writer) {
 		}
 		sort.Sort(byX(xs))
 		sort.Sort(byY(ys))
-		xi, ans := 0, 0
+		li, xi, ans := 0, 0, 0
 		l := make([]*interval, 0)
 		for _, inv := range ys {
-			sort.Sort(byY(l))
-			k := 0
-			for ; k < len(l) && l[k].y < inv.y; k++ {
+			li = 0
+			for ; li < len(l) && l[li].y < inv.y; li++ {
 				ans++
 			}
-			l = l[k:]
+			l = l[li:]
 			for ; xi < len(xs) && xs[xi].x <= inv.y; xi++ {
 				l = append(l, xs[xi])
 			}
@@ -64,9 +65,7 @@ func Solve(r io.Reader, w io.Writer) {
 				l = l[:2]
 			}
 		}
-		for j := 0; j < len(l); j++ {
-			ans++
-		}
+		ans += len(l)
 		fmt.Fprintf(w, "%d\n", ans)
 	}
 }
