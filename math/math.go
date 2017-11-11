@@ -53,3 +53,16 @@ func AbsInt(v int) int {
 	}
 	return v
 }
+
+// PowInt computes a^b
+func PowInt(a, b int) (r int) {
+	r = 1
+	for b > 0 {
+		if b&1 != 0 {
+			r *= a
+		}
+		b >>= 1
+		a *= a
+	}
+	return
+}
